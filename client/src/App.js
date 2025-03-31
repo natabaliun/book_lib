@@ -8,24 +8,26 @@ import UserBooks from './components/User/UserBooks';
 import AdminPage from './components/Admin/AdminPage';
 import AdminUsers from './components/Admin/AdminUsers';
 import Navigation from './components/Navigation';
+import BookPage from './components/BookPage'; // Импортируем BookPage
 
 const App = () => {
-  return (
-      <Router>
-        <Navigation />
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/register" element={<Register />} />
-          <Route path="/user" element={<UserPage />}>
-            <Route path="books" element={<UserBooks />} />
-          </Route>
-          <Route path="/admin" element={<AdminPage />}>
-            <Route path="users" element={<AdminUsers />} />
-          </Route>
-        </Routes>
-      </Router>
-  );
+    return (
+        <Router>
+            <Navigation />
+            <Routes>
+                <Route path="/" element={<Home />} />
+                <Route path="/login" element={<Login />} />
+                <Route path="/register" element={<Register />} />
+                <Route path="/user" element={<UserPage />}>
+                    <Route path="books" element={<UserBooks />} />
+                </Route>
+                <Route path="/admin" element={<AdminPage />}>
+                    <Route path="users" element={<AdminUsers />} />
+                </Route>
+                <Route path="/book/:id" element={<BookPage />} /> {/* Добавляем маршрут для BookPage */}
+            </Routes>
+        </Router>
+    );
 };
 
 export default App;
