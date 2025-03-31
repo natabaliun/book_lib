@@ -381,6 +381,64 @@ app.get('/admin/rentals', (req, res) => {
     });
 });
 
+app.post('/rentals', (req, res) => {
+    const rental = req.body;
+    db.run(`
+        INSERT INTO Rentals (user_id, book_id, rental_start_date, rental_end_date, rental_status)
+        VALUES (?, ?, ?, ?, ?)
+    `, [rental.user_id, rental.book_id, rental.rental_start_date, rental.rental_end_date, rental.rental_status], (err) => {
+        if (err) {
+            res.status(500).send(err.message);
+            return;
+        }
+        res.json({ message: 'Аренда создана успешно!' });
+    });
+});
+
+app.get('/rentals/:id', (req, res) => {
+    const id = req.params.id;
+    db.get(`SELECT * FROM Rentals WHERE rental_id = ?`, [id], (err, row) => {
+        if (err) {
+            res.status(500).send(err.message);
+            return;
+        }
+        if (row) {
+            res.json(row);
+        } else {
+            res.status(404).send('Аренда не найдена!');
+        }
+    });
+});
+
+app.put('/rentals/:id', (req, res) => {
+    const id = req.params.id;
+    const rental = req.body;
+    db.run(`
+        UPDATE Rentals
+        SET user_id = ?, book_id = ?, rental_start_date = ?, rental_end_date = ?, rental_status = ?
+        WHERE rental_id = ?
+    `, [rental.user_id, rental.book_id, rental.rental_start_date, rental.rental_end_date, rental.rental_status, id], (err) => {
+        if (err) {
+            res.status(500).send(err.message);
+            return;
+        }
+        res.json({ message: 'Аренда обновлена успешно!' });
+    });
+});
+
+app.delete('/rentals/:id', (req, res) => {
+    const id = req.params.id;
+    db.run(`DELETE FROM Rentals WHERE rental_id = ?`, [id], (err) => {
+        if (err) {
+            res.status(500).send(err.message);
+            return;
+        }
+        res.json({ message: 'Аренда удалена успешно!' });
+    });
+});
+
 app.listen(port, () => {
     console.log(`Сервер запущен на порту ${port}`);
 });
+
+module.exports = app;

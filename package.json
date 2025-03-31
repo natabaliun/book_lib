@@ -5,14 +5,19 @@
   "main": "app.js",
   "scripts": {
     "start": "node src/server/app.js",
-    "seed": "node src/server/seed.js"
+    "seed": "node src/server/seed.js",
+    "test": "jest"
   },
   "dependencies": {
-    "express": "^4.17.1",
-    "sqlite3": "^5.0.0",
+    "bcrypt": "^5.0.1",
     "body-parser": "^1.19.0",
-    "bcrypt": "^5.0.1"
+    "express": "^4.17.1",
+    "sqlite3": "^5.0.0"
   },
   "author": "Your Name",
-  "license": "ISC"
+  "license": "ISC",
+  "devDependencies": {
+    "jest": "^29.7.0",
+    "supertest": "^7.1.0"
+  }
 }
