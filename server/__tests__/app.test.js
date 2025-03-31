@@ -1,5 +1,5 @@
 const request = require('supertest');
-const app = require('../src/server/app'); // Путь к вашему файлу app.js
+const app = require('../src/app'); // Путь к вашему файлу app.js
 
 describe('Bookstore API Tests', () => {
     describe('Books Endpoints', () => {

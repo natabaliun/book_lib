@@ -4,13 +4,14 @@
   "description": "API для книжного магазина",
   "main": "app.js",
   "scripts": {
-    "start": "node src/server/app.js",
-    "seed": "node src/server/seed.js",
+    "start": "node src/app.js",
+    "seed": "node src/seed.js",
     "test": "jest"
   },
   "dependencies": {
     "bcrypt": "^5.0.1",
     "body-parser": "^1.19.0",
+    "cors": "^2.8.5",
     "express": "^4.17.1",
     "sqlite3": "^5.0.0"
   },

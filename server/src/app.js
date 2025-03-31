@@ -2,11 +2,19 @@ const express = require('express');
 const sqlite3 = require('sqlite3').verbose();
 const bodyParser = require('body-parser');
 const bcrypt = require('bcrypt');
+const cors = require('cors'); // Добавляем cors
 
 const app = express();
 const port = 3000;
 
-app.use(bodyParser.json());
+app.use(cors()); // Добавляем middleware cors
+
+app.use(bodyParser.json({
+    origin: 'http://localhost:3001', // Разрешаем запросы только с этого источника
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE', // Разрешаем указанные HTTP-методы
+    credentials: true, // Разрешаем передачу куки
+    optionsSuccessStatus: 204, // Устанавливаем статус успешного ответа для OPTIONS-запросов
+}));
 
 // Подключение к базе данных SQLite
 const db = new sqlite3.Database('./bookstore.db', (err) => {
