@@ -7,8 +7,9 @@ import UserPage from './components/User/UserPage';
 import UserBooks from './components/User/UserBooks';
 import AdminPage from './components/Admin/AdminPage';
 import AdminUsers from './components/Admin/AdminUsers';
+import AdminBooks from './components/Admin/AdminBooks';
 import Navigation from './components/Navigation';
-import BookPage from './components/BookPage'; // Импортируем BookPage
+import BookPage from './components/BookPage';
 
 const App = () => {
     return (
@@ -23,6 +24,7 @@ const App = () => {
                 </Route>
                 <Route path="/admin" element={<AdminPage />}>
                     <Route path="users" element={<AdminUsers />} />
+                    <Route path="books" element={<AdminBooks />} />
                 </Route>
                 <Route path="/book/:id" element={<BookPage />} /> {/* Добавляем маршрут для BookPage */}
             </Routes>

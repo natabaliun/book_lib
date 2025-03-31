@@ -2,12 +2,15 @@ const express = require('express');
 const sqlite3 = require('sqlite3').verbose();
 const bodyParser = require('body-parser');
 const bcrypt = require('bcrypt');
-const cors = require('cors'); // Добавляем cors
+const cors = require('cors');
+const cron = require('node-cron');
+const nodemailer = require('nodemailer');
 
 const app = express();
 const port = 3000;
 
-app.use(cors()); // Добавляем middleware cors
+app.use(cors());
+app.use(bodyParser.json());
 
 app.use(bodyParser.json({
     origin: 'http://localhost:3001', // Разрешаем запросы только с этого источника
@@ -442,6 +445,53 @@ app.delete('/rentals/:id', (req, res) => {
             return;
         }
         res.json({ message: 'Аренда удалена успешно!' });
+    });
+});
+
+// Настройка nodemailer
+const transporter = nodemailer.createTransport({
+    service: 'gmail', // или другой сервис
+    auth: {
+        user: 'ваша_почта@gmail.com',
+        pass: 'ваш_пароль',
+    },
+});
+
+// Функция для отправки email-уведомления
+const sendRentalReminder = (userEmail, bookTitle, endDate) => {
+    const mailOptions = {
+        from: 'ваша_почта@gmail.com',
+        to: userEmail,
+        subject: 'Напоминание об окончании аренды',
+        text: `Здравствуйте! Напоминаем, что срок аренды книги "${bookTitle}" истекает ${endDate}.`,
+    };
+
+    transporter.sendMail(mailOptions, (error, info) => {
+        if (error) {
+            console.error('Ошибка отправки email:', error);
+        } else {
+            console.log('Email отправлен:', info.response);
+        }
+    });
+};
+
+// Планирование задачи для проверки сроков аренды и отправки уведомлений
+cron.schedule('0 0 * * *', () => { // Запуск задачи каждый день в полночь
+    const today = new Date().toISOString().split('T')[0];
+    db.all(`
+        SELECT Users.email, Books.title, Rentals.rental_end_date
+        FROM Rentals
+        LEFT JOIN Users ON Rentals.user_id = Users.user_id
+        LEFT JOIN Books ON Rentals.book_id = Books.book_id
+        WHERE Rentals.rental_end_date = ?
+    `, [today], (err, rows) => {
+        if (err) {
+            console.error('Ошибка при проверке сроков аренды:', err);
+            return;
+        }
+        rows.forEach((row) => {
+            sendRentalReminder(row.email, row.title, row.rental_end_date);
+        });
     });
 });
 
